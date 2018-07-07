@@ -11,7 +11,7 @@ module Grape
 
         helpers do
           def compare_etag(etag)
-            etag = Digest::SHA1.hexdigest(etag.to_s)
+            etag = MurmurHash3::V128.str_hexdigest(etag.to_s)
             error!("Not Modified", 304) if request.headers["If-None-Match"] == etag
 
             header "ETag", etag
