@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "grape/rails/cache/version"
 require "grape/rails/cache/formatter"
 
@@ -51,7 +53,7 @@ module Grape
             expires_in(opts[:expires_in] || default_expire_time, public: opts.fetch(:public, true) )
 
             if opts[:etag]
-              cache_key += ActiveSupport::Cache.expand_cache_key(opts[:etag])
+              cache_key = "#{cache_key}#{ActiveSupport::Cache.expand_cache_key(opts[:etag])}"
               compare_etag(opts[:etag]) # Check if client has fresh version
             end
 
