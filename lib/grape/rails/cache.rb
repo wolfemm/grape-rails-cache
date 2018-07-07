@@ -20,19 +20,21 @@ module Grape
           # Based on actionpack/lib/action_controller/base.rb, line 1216
           def expires_in(seconds, options = {})
             cache_control = []
+
             if seconds == 0
               cache_control << "no-cache"
             else
               cache_control << "max-age=#{seconds}"
             end
-            if options[:public]
+
+            if options.delete(:public)
               cache_control << "public"
             else
               cache_control << "private"
             end
 
             # This allows for additional headers to be passed through like 'max-stale' => 5.hours
-            cache_control += options.symbolize_keys.reject{|k,v| k == :public || k == :private }.map{ |k,v| v == true ? k.to_s : "#{k.to_s}=#{v.to_s}"}
+            cache_control += options.map { |k, v| v == true ? k : "#{k}=#{v}" }
 
             header "Cache-Control", cache_control.join(', ')
           end
